@@ -98,138 +98,141 @@
     </div>
 
     <script>
-      const uploadBtn = document.getElementById("uploadBtn");
-      const cameraBtn = document.getElementById("cameraBtn");
-      const imageInput = document.getElementById("imageInput");
-      const imagePreview = document.getElementById("imagePreview");
-      const cameraPreview = document.getElementById("cameraPreview");
-      const detectUploadBtn = document.getElementById("detectUploadBtn");
-      const detectCameraBtn = document.getElementById("detectCameraBtn");
-      const captureBtn = document.getElementById("captureBtn");
-      const uploadContainer = document.getElementById("uploadContainer");
-      const cameraContainer = document.getElementById("cameraContainer");
-      const videoElement = document.getElementById("video");
-      const uploadCard = document.getElementById("uploadCard");
-      const cameraCard = document.getElementById("cameraCard");
+    <script>
+  const uploadBtn = document.getElementById("uploadBtn");
+  const cameraBtn = document.getElementById("cameraBtn");
+  const imageInput = document.getElementById("imageInput");
+  const imagePreview = document.getElementById("imagePreview");
+  const cameraPreview = document.getElementById("cameraPreview");
+  const detectUploadBtn = document.getElementById("detectUploadBtn");
+  const detectCameraBtn = document.getElementById("detectCameraBtn");
+  const captureBtn = document.getElementById("captureBtn");
+  const uploadContainer = document.getElementById("uploadContainer");
+  const cameraContainer = document.getElementById("cameraContainer");
+  const videoElement = document.getElementById("video");
+  const uploadCard = document.getElementById("uploadCard");
+  const cameraCard = document.getElementById("cameraCard");
 
-      let isDetecting = false;
+  let isDetecting = false;
 
-      // Reset state and UI after detection
-      function resetDetection() {
-        isDetecting = false;
-        detectCameraBtn.innerText = "Deteksi Foto Langsung";
-        detectCameraBtn.disabled = false;
-        detectUploadBtn.innerText = "Deteksi Foto Unggahan";
+  // Reset state and UI after detection
+  function resetDetection() {
+    isDetecting = false;
+    detectCameraBtn.innerText = "Deteksi Foto Langsung";
+    detectCameraBtn.disabled = false;
+    detectUploadBtn.innerText = "Deteksi Foto Unggahan";
+    detectUploadBtn.disabled = false;
+  }
+
+  // Show upload container
+  uploadBtn.addEventListener("click", () => {
+    uploadContainer.style.display = "block";
+    cameraContainer.style.display = "none";
+    uploadCard.style.display = "none";
+    cameraCard.style.display = "none";
+  });
+
+  // Show camera container
+  cameraBtn.addEventListener("click", () => {
+    uploadContainer.style.display = "none";
+    cameraContainer.style.display = "block";
+    uploadCard.style.display = "none";
+    cameraCard.style.display = "none";
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          videoElement.srcObject = stream;
+        })
+        .catch((error) => {
+          console.error("Error accessing camera:", error);
+        });
+    }
+  });
+
+  // Handle image upload
+  imageInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        imagePreview.style.display = "block";
         detectUploadBtn.disabled = false;
-      }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-      // Show upload container
-      uploadBtn.addEventListener("click", () => {
-        uploadContainer.style.display = "block";
-        cameraContainer.style.display = "none";
-        uploadCard.style.display = "none";
-        cameraCard.style.display = "none";
-      });
+  // Capture image from camera
+  captureBtn.addEventListener("click", () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-      // Show camera container
-      cameraBtn.addEventListener("click", () => {
-        uploadContainer.style.display = "none";
-        cameraContainer.style.display = "block";
-        uploadCard.style.display = "none";
-        cameraCard.style.display = "none";
+    cameraPreview.src = canvas.toDataURL("image/jpeg");
+    cameraPreview.style.display = "block";
+    detectCameraBtn.disabled = false;
+  });
 
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          navigator.mediaDevices
-            .getUserMedia({ video: true })
-            .then((stream) => {
-              videoElement.srcObject = stream;
-            })
-            .catch((error) => {
-              console.error("Error accessing camera:", error);
-            });
+  // Detect uploaded image
+  detectUploadBtn.addEventListener("click", () => {
+    if (isDetecting) return;
+    isDetecting = true;
+    detectUploadBtn.innerText = "Sedang Mendeteksi...";
+
+    fetch("/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: imagePreview.src }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          imagePreview.src = "data:image/jpeg;base64," + data.image;
+        } else {
+          Swal.fire('Error', data.message, 'error');
         }
+        resetDetection();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire('Error', 'Failed to process the image.', 'error');
+        resetDetection();
       });
+  });
 
-      // Handle image upload
-      imageInput.addEventListener("change", (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            imagePreview.src = e.target.result;
-            imagePreview.style.display = "block";
-            detectUploadBtn.disabled = false;
-          };
-          reader.readAsDataURL(file);
+  // Detect camera image
+  detectCameraBtn.addEventListener("click", () => {
+    if (isDetecting) return;
+    isDetecting = true;
+    detectCameraBtn.innerText = "Sedang Mendeteksi...";
+
+    fetch("/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: cameraPreview.src }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          cameraPreview.src = "data:image/jpeg;base64," + data.image;
+        } else {
+          Swal.fire('Error', data.message, 'error');
         }
+        resetDetection();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire('Error', 'Failed to process the image.', 'error');
+        resetDetection();
       });
+  });
+</script>
 
-      // Capture image from camera
-      captureBtn.addEventListener("click", () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-        const context = canvas.getContext("2d");
-        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-        cameraPreview.src = canvas.toDataURL("image/jpeg");
-        cameraPreview.style.display = "block";
-        detectCameraBtn.disabled = false;
-      });
-
-      // Detect uploaded image
-      detectUploadBtn.addEventListener("click", () => {
-        if (isDetecting) return;
-        isDetecting = true;
-        detectUploadBtn.innerText = "Sedang Mendeteksi...";
-
-        fetch("/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: imagePreview.src }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.status === "success") {
-              imagePreview.src = "data:image/jpeg;base64," + data.image;
-            } else {
-              alert("Error: " + data.message);
-            }
-            resetDetection();
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            alert("Failed to process the image.");
-            resetDetection();
-          });
-      });
-
-      // Detect camera image
-      detectCameraBtn.addEventListener("click", () => {
-        if (isDetecting) return;
-        isDetecting = true;
-        detectCameraBtn.innerText = "Sedang Mendeteksi...";
-
-        fetch("/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: cameraPreview.src }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.status === "success") {
-              cameraPreview.src = "data:image/jpeg;base64," + data.image;
-            } else {
-              alert("Error: " + data.message);
-            }
-            resetDetection();
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            alert("Failed to process the image.");
-            resetDetection();
-          });
-      });
     </script>
   </body>
 </html>
