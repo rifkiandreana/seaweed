@@ -44,10 +44,10 @@ def submit_data():
 
     try:
         # Decode base64 image
-        image_str = image_data.split(",")[1]
+        image_str = image_data.split(",")[1]  # Mengambil bagian setelah data:image/jpeg;base64,
         image_bytes = base64.b64decode(image_str)
         image = Image.open(BytesIO(image_bytes)).convert("RGB")  # Pastikan format RGB
-        
+
         # Run YOLO detection
         results = detector.predict(image, conf=0.25)
 
@@ -55,9 +55,12 @@ def submit_data():
         draw = ImageDraw.Draw(image)
         
         bounding_boxes = []
-        
-        # Load font for larger text (you can change the font and size)
-        font = ImageFont.truetype("arial.ttf", 20)  # Set a larger font size
+
+        # Cek apakah font tersedia, jika tidak, gunakan font default
+        try:
+            font = ImageFont.truetype("arial.ttf", 20)
+        except IOError:
+            font = ImageFont.load_default()  # Gunakan font default jika arial.ttf tidak ada
 
         # Loop through all results
         for result in results:
@@ -75,7 +78,7 @@ def submit_data():
                 # Menggambar bounding box dengan warna yang sesuai
                 draw.rectangle([x1, y1, x2, y2], outline=color, width=3)
                 
-                # Menggambar nama kelas dengan font besar
+                # Menggambar nama kelas dengan font
                 text_bbox = draw.textbbox((x1, y1 - 10), class_name, font=font)  # Get bounding box of the text
                 text_width = text_bbox[2] - text_bbox[0]  # Calculate width from bbox
                 text_height = text_bbox[3] - text_bbox[1]  # Calculate height from bbox
