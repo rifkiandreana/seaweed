@@ -93,7 +93,8 @@ def submit_data():
                     'x2': x2,
                     'y2': y2,
                     'class_id': class_id,
-                    'class_name': class_name
+                    'class_name': class_name,
+                    'confidence': confidence
                 })
 
         # Konversi gambar dengan bounding box ke base64
