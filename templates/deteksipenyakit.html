@@ -40,6 +40,9 @@
       .btn-back a:hover {
         text-decoration: underline;
       }
+      #detectionResults {
+        margin-top: 20px;
+      }
     </style>
   </head>
   <body>
@@ -95,6 +98,10 @@
         <button id="captureBtn" class="btn btn-warning w-100 mt-2">Capture Foto</button>
         <button id="detectCameraBtn" class="btn btn-success w-100 mt-2" disabled>Deteksi Foto Langsung</button>
       </div>
+        <div id="detectionResults" style="display: none">
+        <h3 class="text-center">Hasil Deteksi</h3>
+        <div id="detectionText" class="alert alert-info mt-3"></div>
+      </div>
     </div>
 
   
@@ -112,6 +119,8 @@
   const videoElement = document.getElementById("video");
   const uploadCard = document.getElementById("uploadCard");
   const cameraCard = document.getElementById("cameraCard");
+  const detectionResults = document.getElementById("detectionResults");
+  const detectionText = document.getElementById("detectionText");
 
   let isDetecting = false;
 
@@ -192,7 +201,21 @@
       .then((response) => response.json())
       .then((data) => {
         if (data.status === "success") {
-          imagePreview.src = "data:image/jpeg;base64," + data.image;
+            imagePreview.src = "data:image/jpeg;base64," + data.image;
+            detectionResults.style.display = "block";
+            detectionText.innerHTML = ""; // Clear previous results
+            data.bounding_boxes.forEach((box) => {
+            const p = document.createElement("p");
+            p.innerText = `Kelas: ${box.class_name}, Akurasi: ${(box.confidence * 100).toFixed(2)}%`;
+            detectionText.appendChild(p);    });
+            const linkText = document.createElement("p");
+              const link = document.createElement("a");
+              link.href = "/penyakitrumputlaut"; // Ganti dengan URL halaman tujuan
+              link.innerText = "Klik di sini untuk informasi lebih lanjut.";
+              link.style.color = "blue";
+              link.style.textDecoration = "underline";
+              linkText.appendChild(link);
+              detectionText.appendChild(linkText);
         } else {
           Swal.fire('Error', data.message, 'error');
         }
