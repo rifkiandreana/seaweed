@@ -68,6 +68,7 @@ def submit_data():
                 # Koordinat bounding box
                 x1, y1, x2, y2 = [int(coord) for coord in box.xyxy[0]]
                 class_id = int(box.cls[0])  # ID kelas objek
+                confidence = float(box.conf[0])  # Akurasi (confidence)
                 
                 # Mengambil nama kelas berdasarkan class_id
                 class_name = detector.model.names.get(class_id, "Unknown")
