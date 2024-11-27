@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/glightbox.min.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/lineicons.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/chatbot.css') }}" />
   </head>
   <body>
     <!-- ====== Header Start ====== -->
@@ -61,6 +62,29 @@
       </div>
     </header>
     <!-- ====== Header End ====== -->
+
+    <!-- Untuk Chat Bot-->
+    <!-- Chat Button -->
+    <button class="chat-button" onclick="toggleChat()">💬</button>
+
+    <!-- Chatbox -->
+    <div class="chatbox" id="chatbox">
+      <div class="chatbox-header">Seawcare</div>
+      <div class="chatbox-content" id="chatbox-content">
+        <div class="bot-message">
+          Selamat datang! Saya adalah chatbot sederhana. Silakan pilih salah satu opsi berikut:<br />
+          1. Informasi Tentang Rumput Laut<br />
+          2. Cara Penggunaan Aplikasi<br />
+          3. Tebak-Tebakan Lucu<br />
+          Ketik nomor pilihan Anda di bawah ini.
+        </div>
+      </div>
+      <div class="chatbox-footer">
+        <input type="text" id="user-input" placeholder="Ketik pesan..." />
+        <button onclick="sendMessage()">Kirim</button>
+      </div>
+    </div>
+    <!-- End Chatbot-->
 
     <!-- ====== Hero Start ====== -->
     <section class="hero" id="home">
@@ -132,7 +156,7 @@
             <div class="single-feature wow fadeInUp" data-wow-delay=".1s">
               <a href="/persebaran">
                 <div class="feature-icon">
-                  <i class="lni lni-layout"></i>
+                  <i class="lni lni-hand"></i>
                 </div>
                 <div class="feature-content">
                   <h3 class="feature-title">Persebaran Budidaya Rumput Laut</h3>
@@ -477,5 +501,6 @@
     <script src="{{ url_for('static', filename='assets/js/wow.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/glightbox.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/chatbot.js') }}"></script>
   </body>
 </html>

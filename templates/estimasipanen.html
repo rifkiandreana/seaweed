@@ -199,7 +199,7 @@
       <!-- Kartu Laju Pertumbuhan -->
       <div class="card" id="growthCard" onclick="hideCards()">
         <img src="{{ url_for('static', filename='assets/images/bg5.png') }}" alt="Laju Pertumbuhan Rumput Laut" />
-        <h3>Laju Pertumbuhan (G)</h3>
+        <h3>Laju Pertumbuhan (g/hari)</h3>
         <p>Kalkulator untuk menghitung laju pertumbuhan rumput laut berdasarkan berat awal, berat akhir, dan lama pemeliharaan.</p>
         <button onclick="showCalculator('growth')">Hitung</button>
       </div>
@@ -207,7 +207,7 @@
       <!-- Kartu Produksi Biomassa -->
       <div class="card" id="biomassCard" onclick="hideCards()">
         <img src="{{ url_for('static', filename='assets/images/bg4.png') }}" alt="Produksi Biomassa Rumput Laut" />
-        <h3>Produksi Biomassa (Pr)</h3>
+        <h3>Produksi Biomassa (g/m)</h3>
         <p>Kalkulator untuk menghitung produksi biomassa rumput laut berdasarkan berat awal, berat akhir, panjang tali, dan jumlah titik tanam.</p>
         <button onclick="showCalculator('biomass')">Hitung</button>
       </div>
@@ -216,16 +216,16 @@
     <main>
       <!-- Formulir Laju Pertumbuhan -->
       <section id="growth" class="calculator-section">
-        <h2>Laju Pertumbuhan (G)</h2>
+        <h2>Laju Pertumbuhan</h2>
         <form id="growthForm">
-          <label for="wo">Berat Awal (Wo) (g):</label>
-          <input type="number" id="wo" placeholder="Masukkan Wo" required />
+          <label for="wo">Berat Awal (g):</label>
+          <input type="number" id="wo" placeholder="Masukkan Berat Awal" required />
 
-          <label for="wt">Berat Akhir (Wt) (g):</label>
-          <input type="number" id="wt" placeholder="Masukkan Wt" required />
+          <label for="wt">Berat Akhir (g):</label>
+          <input type="number" id="wt" placeholder="Masukkan Berat Akhir" required />
 
-          <label for="n">Lama Pemeliharaan (N) (hari):</label>
-          <input type="number" id="n" placeholder="Masukkan N" required />
+          <label for="n">Lama Pemeliharaan (hari):</label>
+          <input type="number" id="n" placeholder="Masukkan Lama Pemeliharaan" required />
 
           <button type="button" onclick="calculateGrowth()">Hitung</button>
         </form>
@@ -235,19 +235,19 @@
 
       <!-- Formulir Produksi Biomassa -->
       <section id="biomass" class="calculator-section">
-        <h2>Produksi Biomassa (Pr)</h2>
+        <h2>Produksi Biomassa</h2>
         <form id="biomassForm">
-          <label for="woPr">Berat Awal (Wo) (g):</label>
-          <input type="number" id="woPr" placeholder="Masukkan Wo" required />
+          <label for="woPr">Berat Awal (g):</label>
+          <input type="number" id="woPr" placeholder="Masukkan Berat Awal" required />
 
-          <label for="wtPr">Berat Akhir (Wt) (g):</label>
-          <input type="number" id="wtPr" placeholder="Masukkan Wt" required />
+          <label for="wtPr">Berat Akhir (g):</label>
+          <input type="number" id="wtPr" placeholder="Masukkan Berat Akhir" required />
 
-          <label for="b">Panjang Tali (B) (m):</label>
+          <label for="b">Panjang Tali (m):</label>
           <input type="number" id="b" placeholder="Masukkan Panjang Tali" required />
 
-          <label for="a">Jumlah Titik Tanam (A):</label>
-          <input type="number" id="a" placeholder="Masukkan Jumlah Titik" required />
+          <label for="a">Jumlah Titik Tanam :</label>
+          <input type="number" id="a" placeholder="Masukkan Jumlah Titik Tanam" required />
 
           <button type="button" onclick="calculateBiomass()">Hitung</button>
         </form>

@@ -251,7 +251,7 @@ p {
 }
 
 .navbar-brand img {
-  max-width: 160px;
+  max-width: 100px;
 }
 
 .navbar-toggler {
@@ -441,7 +441,7 @@ p {
 .hero {
   background: var(--primary-color);
   padding-top: 180px;
-  padding-bottom: 130px;
+  padding-bottom: 230px;
   position: relative;
 }
 
